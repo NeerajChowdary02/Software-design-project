@@ -1,19 +1,34 @@
-from flask import Flask, render_template, request, url_for, session, redirect
+from flask import Flask, render_template, request, url_for, session, redirect, flash
 
 app = Flask(__name__)
+app.secret_key ="123"
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == "POST":
         if request.form['signup'] == 'Sign up':
-            return render_template('signup.html')
-
+            return redirect(url_for('signup'))
     else:
         print('get')
         return render_template('index.html')
 
-@app.route('/signup')
+@app.route('/signup', methods=["POST", "GET"])
 def signup():
+        
+    if request.method == "POST":
+        if request.form['register'] == 'Register':
+            username = request.form.get('username')
+            password = request.form.get('password')
+            output_msg = "You've successfully signed up! You now need to login\
+                    to complete your profile info before you can request a quote."
+            
+            flash(output_msg)
+            return render_template('signup.html')
+
+    # if request.form['back'] == 'Back':
+    #     return redirect(url_for("index"))
+            
+
     return render_template('signup.html')
 
 
@@ -27,9 +42,29 @@ def client_profile_management():
         state = request.form.get('state')
         zipcode = request.form['zipcode']
     
-        # print(fname, address1, address2, city, state, zipcode)
+        print(state)
+        # Zipcode should be 5 digits long
+        zip_count = 0
+        for _ in zipcode:
+            zip_count += 1
+        if zip_count != 5:
+            flash("Zipcode must be 5 digits long!")
+            return render_template('client_profile_mgmt.html',\
+                                    fname=fname, address1=address1,\
+                                    address2=address2, city=city, state=state)
+        
+        # State needs to be selected
+        if state == "-":
+            flash("You need to select a state!")
+            return render_template('client_profile_mgmt.html',\
+                                    fname=fname, address1=address1,\
+                                    address2=address2, city=city, zipcode=zipcode)
 
-        return render_template('client_profile_mgmt.html')
+        # print(fname, address1, address2, city, state, zipcode)
+    
+        output_msg = 'Your profile has been saved!'
+
+        return render_template('client_profile_mgmt.html', output_msg=output_msg)
 
     else:
         return render_template('client_profile_mgmt.html')
@@ -47,8 +82,9 @@ def fuel_quote_form():
     
         # print(gallons_requested, delivery_address, delivery_date)
         # print(price_per_gallon, total_amount)
+        message = 'Your quotation request has been submitted!'
 
-        return render_template('fuel_quote_form.html')
+        return render_template('fuel_quote_form.html', message=message)
 
     else:
         return render_template('fuel_quote_form.html')

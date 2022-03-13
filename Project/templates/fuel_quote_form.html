@@ -32,7 +32,7 @@
                 <br><br>
 
                 <label for="delivery_date">Delivery Date: </label>
-                <input type="date" name="delivery_date" placeholder="01/01/2000">
+                <input type="date" name="delivery_date" placeholder="01/01/2000" required>
                 <br><br>
 
                 <label for="price_per_gallon">Price/Gallon: </label>
@@ -49,6 +49,11 @@
 
             </form>
 
+            <div class="output_msg">
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
+            </div>
         </div>
     </body>
 </html>

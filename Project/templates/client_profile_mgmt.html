@@ -24,24 +24,25 @@
 
             <form method="POST" action="#">
                 <label for="fname">Full Name:</label>
-                <input type="text" name="fname" placeholder="Full Name" class="required" maxlength="50">
+                <input type="text" name="fname" value="{{ fname }}" placeholder="Full Name" maxlength="50" required>
                 <br><br>
                 
 
                 <label for="address1">Address (Line 1): </label>
-                <input type="text" name="address1" placeholder="Address (Line 1)" class="required" maxlength="100">
+                <input type="text" name="address1" value="{{ address1 }}" placeholder="Address (Line 1)"  maxlength="100" required>
                 <br><br>
 
                 <label for="address2">Address (Line 2): </label>
-                <input type="text" name="address2" placeholder="Address (Line 2)" maxlength="100">
+                <input type="text" name="address2" value="{{ address2 }}" placeholder="Address (Line 2)" maxlength="100" required>
                 <br><br>
 
                 <label for="city">City: </label>
-                <input type="text" name="city" placeholder="City" class="required" maxlength="100">
+                <input type="text" name="city" value="{{ city }}" placeholder="City"  maxlength="100" required>
                 <br><br>
 
                 <label for="state">State: </label>
-                <select class="required" name="state">
+                <select  name="state" value="{{ state }}" required>
+                    <option value="-">-</option>
                     <option value="AL">AL</option>
                     <option value="AK">AK</option>
                     <option value="AR">AR</option>	
@@ -97,12 +98,25 @@
                 <br><br>
 
                 <label for="zipcode">Zipcode: </label>
-                <input type="number" name="zipcode" placeholder="123456789" class="required" maxlength="9">
+                <input type="number" name="zipcode" value="{{ zipcode }}" placeholder="12345" maxlength="9" required>
                 <br><br>
 
                 <div class="client_mgmt_buttons">
                     <button type="save_button">Save!</button>
                 </div>
+                
+                <div class="flash_msg">
+                    {% for message in get_flashed_messages() %}
+                      <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="output_msg">
+                    {% if output_msg %}
+                        <p>{{ output_msg }}</p>
+                    {% endif %}
+                </div>
+
             </form>
         </div>
     </body>
