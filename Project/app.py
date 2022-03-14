@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, url_for, session, redirect, flash
+import price_module
+
 
 app = Flask(__name__)
 app.secret_key ="123"
@@ -6,10 +8,16 @@ app.secret_key ="123"
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == "POST":
-        if request.form['signup'] == 'Sign up':
-            return redirect(url_for('signup'))
-    else:
-        print('get')
+        if request.form['login'] == 'Log in':
+            username = request.form.get('username')
+            password = request.form.get('password')
+            return render_template('index.html')
+        
+        elif request.form['signup'] == 'Sign up':
+            return redirect(url_for(signup))
+        
+
+    else: # method == GET
         return render_template('index.html')
 
 @app.route('/signup', methods=["POST", "GET"])
@@ -95,6 +103,6 @@ def fuel_quote_form():
 def fuel_quote_history():
     return render_template('fuel_quote_history.html')
 
-
+# wsgi_app = app.wsgi_app
 if __name__ == "__main__":
     app.run(debug=True)
