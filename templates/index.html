@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+        <!-- <link rel="stylesheet" href="../static/styles/index.css"> -->
+        <title> AshNee Fuel Co. </title>
+    </head>
+
+    <body>
+        <header>
+            <div class="top_header">
+                <!-- <img src="../static/images/logo_2.png" alt="Company Logo" class="company_logo"> -->
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/logo_2.png') }}" alt="Company Logo" class="company_logo">
+                </a>
+            </div>
+        </header>
+
+
+        <div class="login_form">
+            <div class="login_form_title">
+                Log in!
+            </div>
+            <br><br>
+
+            <form method="POST" action="#">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="username">
+                <br><br>
+
+                <label for="password">Password: </label>
+                <input type="password" id="password" name="password" placeholder="password">
+                <br><br>
+
+                <div class="login_buttons">
+                    <button type="submit" name="login" value="Log in">Log in!</button> 
+                    <button type="submit" name="signup" value="Sign up">Sign up!</button>
+                </div>
+            </form>
+
+            <form method="POST"action="">
+                <div class="login_buttons">
+                    <button type="submit" name="manage_profile" value="Manage Profile">Manage Profile</button>
+                </div>
+            </form>
+
+            <div class="flash_msg">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, output_msg in messages %}
+                    <div class="alert {{category}}"> <p>{{ output_msg }}</p> </div>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+
+        </div>
+    </body>
+</html>

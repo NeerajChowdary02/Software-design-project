@@ -1,0 +1,310 @@
+
+body {
+    margin: 0;
+    background-image: url('../images/background4.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: rgb(217, 255, 0);
+	font-family: sans-serif;
+	font-weight: 500;
+    /* font-size: 20px; */
+    /* opacity: 0.5; */
+}
+
+.top_header {
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* header {
+    background: #d1174f;
+  } */
+
+.company_logo {
+    float: left;
+    padding: 10px 5px;
+    height: 60px;
+    width: auto;
+}
+
+/* Index/ Sign in page */
+
+.login_form {
+    border-radius: 5px;
+    background-color: rgba(71, 71, 71, 0.637);
+    float: right;
+    margin: 25px 4px;
+    right: 140px;
+    top: 200px;
+    padding: 20px;
+    position: relative;
+    width: 275px;
+}
+
+.login_form_title {
+    color: rgb(217, 255, 0);
+    text-align: center;
+    font-size: 28px;
+}
+
+.login_form label {
+    float: left;
+}
+
+.login_form input {
+    float: right;
+}
+
+.login_form button {
+    margin-left: 10px;
+
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.login_buttons {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+input[type=text]{
+    border-radius: 2px;
+    padding: 4px;
+    /* margin-left: 5px;
+    margin-right: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px; */
+}
+
+input[type=password] {
+    border-radius: 2px;
+    padding: 4px;
+}
+
+input[type=text]:focus {
+border: 1px solid #555;
+}
+
+/* Sign Up Page */
+
+.signup_form {
+    border-radius: 5px;
+    background-color: rgba(71, 71, 71, 0.637);
+    float: right;
+    margin: 25px 4px;
+    right: 140px;
+    top: 200px;
+    padding: 20px;
+    position: relative;
+    width: 275px;
+}
+
+.signup_form_title {
+    color: rgb(217, 255, 0);
+    text-align: center;
+    font-size: 28px;
+}
+
+.signup_form label {
+    float: left;
+}
+
+.signup_form input {
+    float: right;
+}
+
+.signup_form button {
+    margin: 5px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.signup_buttons {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Client Profile Management Page */
+
+.client_mgmt_form {
+    border-radius: 5px;
+    background-color: rgba(71, 71, 71, 0.637);
+    float: right;
+    margin: 25px 4px;
+    right: 140px;
+    top: 200px;
+    padding: 20px;
+    position: relative;
+    width: 350px;
+}
+
+.client_mgmt_title {
+    color: rgb(217, 255, 0);
+    text-align: center;
+    font-size: 28px;
+}
+
+.client_mgmt_form label {
+    float: left;
+}
+
+.client_mgmt_form input {
+    float: right;
+}
+
+.client_mgmt_form button {
+
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.client_mgmt_form select {
+    float: right;
+}
+
+.client_mgmt_buttons {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.required:after {
+    content: " *";
+    color: red;
+}
+
+.flash_msg {
+    /* color: rgb(255, 255, 255); */
+    text-align: center;
+    font-size: 20px;
+}
+
+/* Fuel Quote Form */ 
+
+.fuel_quote_form {
+    border-radius: 5px;
+    background-color: rgba(71, 71, 71, 0.637);
+    float: right;
+    margin: 25px 4px;
+    right: 140px;
+    top: 200px;
+    padding: 20px;
+    position: relative;
+    width: 300px;
+}
+
+.fuel_quote_form_title {
+    color: rgb(217, 255, 0);
+    text-align: center;
+    font-size: 28px;
+}
+
+.fuel_quote_form label {
+    float: left;
+}
+
+.fuel_quote_form input {
+    float: right;
+    width: 125px;
+}
+
+.fuel_quote_form button {
+    margin-left: 10px;
+
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.fuel_quote_form_button {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.output_msg {
+    color: rgb(255, 255, 255);
+    text-align: center;
+    font-size: 20px;
+}
+
+
+/* Fuel Quote History*/
+
+.quote_hist {
+    border-radius: 5px;
+    background-color: rgba(71, 71, 71, 0.637);
+    float: right;
+    margin: 25px 4px;
+    right: 140px;
+    top: 200px;
+    padding: 20px;
+    position: relative;
+    width: 400px;
+}
+
+
+.quote_hist table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin: auto;
+}
+
+.quote_hist td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+  
+
+
+.logged_in_form {
+    border-radius: 5px;
+    background-color: rgba(71, 71, 71, 0.637);
+    float: right;
+    margin: 25px 4px;
+    right: 140px;
+    top: 200px;
+    padding: 20px;
+    position: relative;
+    width: 275px;
+}
+
+.logged_in_btn {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.logged_in_btn button {
+    border-radius: 4px;
+    margin: 8px auto;
+    padding: 10px;
+    text-align: center;
+}
+
+
+.alert.error {
+    color: white;
+    background-color: rgba(9, 66, 255, 0.568);
+    border-radius: 3px;
+    
+}
+
+.alert.success {
+    color: white;
+}
