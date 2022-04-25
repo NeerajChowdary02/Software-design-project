@@ -45,6 +45,23 @@ def genID(length):
     id = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(length)])
     return id
 
+
+def log(user, text):
+    if user == "":
+        return
+    
+    curr_timestamp = str(datetime.now())
+    curr_timestamp += ':'
+    
+
+    filename = 'SQL Log/' + user + '.txt'
+
+    with open(filename, 'a') as file:
+        print(curr_timestamp, file=file)
+        print(text, file=file)
+
+
+
 @app.teardown_appcontext
 def close_conn(e):
     db = g.pop('db', None)
@@ -65,6 +82,8 @@ def index():
 
             command = f"SELECT password FROM customer\
                         WHERE username = '{username}';" # Fetching the password hash 
+            temp = " ".join(command.split()) + '\n'
+            log_txt = temp
 
             db = get_db()
             cursor = db.cursor()
@@ -73,6 +92,8 @@ def index():
             cursor.close()
 
             if table_data == None:
+                output_msg = "This username doesn't exist!"
+                flash(output_msg, 'error')
                 return redirect(url_for('index'))
 
             if not bcrypt.check_password_hash(table_data[0], password): # incorrect username or pwd
@@ -88,12 +109,18 @@ def index():
                 command = f"SELECT customerid\
                             FROM customer\
                             WHERE username = '{session['username']}';"
+                temp = " ".join(command.split()) + '\n'
+                log_txt += temp
+
                 db = get_db()
                 cursor = db.cursor()
 
                 cursor.execute(command)
                 session['customer_id'] = cursor.fetchone()[0]
-                print(session['customer_id'])
+                cursor.close()
+
+                # # log_txt += '\n'
+                log(session['customer_id'], log_txt)
 
                 return redirect(url_for('logged_in'))
 
@@ -103,24 +130,24 @@ def index():
         elif request.form.get('signup') == 'Sign up':
             return redirect(url_for("signup"))
 
-        elif request.form.get('manage_profile') == 'Manage Profile':
-            if not session['signed_in']:
-                output_msg = "You must sign in or sign up before you can manage your profile."
-                flash(output_msg, 'error')
-                return redirect(url_for("index"))
+        # elif request.form.get('manage_profile') == 'Manage Profile':
+        #     if not session['signed_in']:
+        #         output_msg = "You must sign in or sign up before you can manage your profile."
+        #         flash(output_msg, 'error')
+        #         return redirect(url_for("index"))
 
-            return redirect(url_for("client_profile_management"))
+        #     return redirect(url_for("client_profile_management"))
 
-        elif request.form.get('sign_out') == 'Sign Out':
-            # if not session['signed_in']:
-            output_msg = "You are not signed in!"
-            # if 'signed_in' in request.cookies:
-            #     print('hola')
-            if session['signed_in']:
-                output_msg = "Successfully signed out!"
-                session['signed_in'] = False
-            flash(output_msg, 'error')
-            return redirect(url_for("index"))
+        # elif request.form.get('sign_out') == 'Sign Out':
+        #     # if not session['signed_in']:
+        #     output_msg = "You are not signed in!"
+        #     # if 'signed_in' in request.cookies:
+        #     #     print('hola')
+        #     if session['signed_in']:
+        #         output_msg = "Successfully signed out!"
+        #         session['signed_in'] = False
+        #     flash(output_msg, 'error')
+        #     return redirect(url_for("index"))
                 
 
     else: # method == GET
@@ -133,6 +160,9 @@ def signup():
             session['username'] = request.form.get('username')
             encrypted_pwd = bcrypt.generate_password_hash(request.form.get('password')).decode('utf-8')
             session['password'] = encrypted_pwd
+
+            # session['username'] = username
+            # session['password']
             
             db = get_db()
             cursor = db.cursor()
@@ -140,6 +170,8 @@ def signup():
             # Check username for duplicates
             command = f"SELECT * FROM customer \
                         WHERE username = '{session['username']}';"
+            temp = " ".join(command.split()) + '\n'
+            log_txt = temp
             cursor.execute(command)
             table_data = len(cursor.fetchall()) # number of users with the same usernames; Max should be 1
 
@@ -154,6 +186,8 @@ def signup():
             session['customer_id'] = genID(16)
             command = "INSERT INTO customer VALUES "\
                       f"('{session['customer_id']}', '' , '{session['username']}', '{session['password']}')"
+            temp = " ".join(command.split()) + '\n'
+            log_txt += temp
 
             cursor.execute(command)
             db.commit()
@@ -165,7 +199,9 @@ def signup():
 
             session['signed_in'] = True
 
-            # return render_template('signup.html')
+            # log_txt += '\n'
+            log(session['customer_id'], log_txt)
+
             return redirect(url_for('logged_in'))
 
         elif request.form.get('back') == 'Back':
@@ -204,11 +240,25 @@ def logged_in():
             cursor = db.cursor()
             command = f"SELECT address1, address2, city, state_,  zipcode \
                    FROM user_details WHERE customerid = '{session['customer_id']}';"
+            temp = " ".join(command.split()) + '\n'
+            log_txt = temp
 
             cursor.execute(command)
             table_data = cursor.fetchone()
-            print(table_data)
+            # print(table_data)
+            
+            # command = f"SELECT customerid\
+            #                 FROM customer\
+            #                 WHERE username = '{session['username']}';"
+            # temp = " ".join(command.split()) + '\n'
+            # log_txt += temp
+
+            # cursor.execute(command)
+            # session['customer_id'] = cursor.fetchone()[0]
             cursor.close()
+
+            # log_txt += '\n'
+            log(session['customer_id'], log_txt)
 
             if table_data == None: # No address in db
                 output_msg = "Please update your address in your account."
@@ -266,6 +316,8 @@ def client_profile_management():
         command = f"SELECT customerid\
                     FROM customer\
                     WHERE username = '{session['username']}';"
+        temp = " ".join(command.split()) + '\n'
+        log_txt = temp
         
         cursor.execute(command)
         data = cursor.fetchone() # user customerid
@@ -273,6 +325,9 @@ def client_profile_management():
         if len(data) != 0: # user already exists
             command = f"SELECT COUNT(*) FROM user_details\
                         WHERE customerid = '{data[0]}';"
+            temp = " ".join(command.split()) + '\n'
+            log_txt += temp
+
             cursor.execute(command)
             num = cursor.fetchall()[0][0]
             print(num)
@@ -283,6 +338,9 @@ def client_profile_management():
                             f"('{session['user_id']}', '{session['customer_id']}',\
                                 '{session['name']}', '{session['address1']}', '{session['address2']}',\
                                 '{session['city']}', '{session['state']}', '{session['zipcode']}')"
+                temp = " ".join(command.split()) + '\n'
+                log_txt += temp
+
                 output_msg = 'Your profile has been saved!'
             
             else:
@@ -290,24 +348,28 @@ def client_profile_management():
                             cust_name = '{session['name']}', address1 = '{session['address1']}', address2 = '{session['address2']}',\
                             city = '{session['city']}', state_ = '{session['state']}', zipcode = '{session['zipcode']}'\
                             WHERE customerid = '{data[0]}';"
+                temp = " ".join(command.split()) + '\n'
+                log_txt += temp
+
                 output_msg = 'Your profile have been updated!'
-            print(command)
-
-        # else:    # setting up profile for the first time
-        #     # Send the data to the db
-        #     session['user_id'] = genID(16)
-        #     command = "INSERT INTO user_details VALUES "\
-        #                 f"('{session['user_id']}', '{session['customer_id']}',\
-        #                     '{session['name']}', '{session['address1']}', '{session['address2']}',\
-        #                     '{session['city']}', '{session['state']}', '{session['zipcode']}')"
-        #     output_msg = 'Your profile has been saved!'
-
+            # print(command)
 
         cursor.execute(command)
         db.commit()
-        cursor.close()
     
+        # Get customer id into cookies
+        command = f"SELECT customerid\
+                            FROM customer\
+                            WHERE username = '{session['username']}';"
+        temp = " ".join(command.split()) + '\n'
+        log_txt += temp
+        cursor.execute(command)
+        session['customer_id'] = cursor.fetchone()[0]
+        cursor.close()
 
+        # log_txt += '\n'
+        log(session['customer_id'], log_txt)
+        
         return render_template('client_profile_mgmt.html', output_msg=output_msg)
 
     else:
@@ -321,9 +383,10 @@ def fuel_quote_form():
         if request.form.get('home') == 'Home':
             return redirect(url_for("logged_in"))
 
-   
         gallons_requested = request.form['gallons_requested']
         delivery_date = request.form['delivery_date']
+        # print(type(delivery_date))
+        # print(delivery_date)
 
         today = datetime.today().strftime('%Y-%m-%d')
         if today > delivery_date:   # the date is in the past
@@ -339,6 +402,8 @@ def fuel_quote_form():
         command = f"SELECT customerid\
                     FROM customer\
                     WHERE username = '{session['username']}';"
+        temp = " ".join(command.split()) + '\n'
+        log_txt = temp
         
         db = get_db()
         cursor = db.cursor()
@@ -348,7 +413,10 @@ def fuel_quote_form():
 
         command = f"SELECT orderid\
                      FROM orders\
-                     WHERE customerid = '{session['customer_id']}';" 
+                     WHERE customerid = '{session['customer_id']}';"
+        temp = " ".join(command.split()) + '\n'
+        log_txt += temp
+
         cursor.execute(command)
         num_orders = len(cursor.fetchall())
 
@@ -361,10 +429,12 @@ def fuel_quote_form():
         command = f"SELECT state_\
                     FROM user_details\
                     WHERE customerid = '{session['customer_id']}';"
+        temp = " ".join(command.split()) + '\n'
+        log_txt += temp
+            
         cursor.execute(command)
         session['state'] = cursor.fetchone()[0]
         cursor.close()
-
 
         price_p_gal = price_module.Pricing_module().calcPrice(session['state'],\
                         session['hist'], gallons_requested)
@@ -373,7 +443,9 @@ def fuel_quote_form():
         session['price_p_gallon'] = price_p_gal
         session['total_price'] = total_price
 
-        
+        # log_txt += '\n'
+        log(session['customer_id'], log_txt)
+
         if request.form.get('calculate') == 'Calculate':
             return redirect('fuel_quote_confirm')
             # return render_template('fuel_quote_confirm.html', message=message)
@@ -382,6 +454,8 @@ def fuel_quote_form():
         command = f"SELECT customerid\
                     FROM customer\
                     WHERE username = '{session['username']}';"
+        temp = " ".join(command.split()) + '\n'
+        log_txt = temp
         
         db = get_db()
         cursor = db.cursor()
@@ -391,12 +465,11 @@ def fuel_quote_form():
 
         command = f"SELECT address1, address2, city, state_,  zipcode \
                    FROM user_details WHERE customerid = '{session['customer_id']}';"
+        temp = " ".join(command.split()) + '\n'
+        log_txt += temp
 
         cursor.execute(command)
         table_data = cursor.fetchone()
-        # if len(table_data) == 0: # No address in db
-
-
 
         deli_address = ''
         for elem in table_data:
@@ -409,6 +482,9 @@ def fuel_quote_form():
 
         db.commit()
         cursor.close()
+
+        # log_txt += '\n'
+        log(session['customer_id'], log_txt)
 
         return render_template('fuel_quote_form.html', deli_address=deli_address)
 
@@ -423,14 +499,15 @@ def fuel_quote_confirm():
         elif request.form.get('submit') == 'Submit': # store the order in the db
             # create a unique order id
             session['order_id'] = genID(16)
-            # print(f"date = {session['deli_date']}")
 
             # Getting Delivery address from the db
             db = get_db()
             cursor = db.cursor()
             command = f"SELECT address1, address2, city, state_,  zipcode \
                    FROM user_details WHERE customerid = '{session['customer_id']}';"
-
+            temp = " ".join(command.split()) + '\n'
+            log_txt = temp
+        
             cursor.execute(command)
             table_data = cursor.fetchone()
             # print(table_data)
@@ -452,6 +529,8 @@ def fuel_quote_confirm():
                         VALUES ('{session['order_id']}', '{session['customer_id']}',\
                             '{session['deli_address']}', {session['gallons_req']}, NOW(),\
                             '{session['deli_date']}', {session['price_p_gallon']}, {session['total_price']});"
+                temp = " ".join(command.split()) + '\n'
+                log_txt += temp
                 
                 db = get_db()
                 cursor = db.cursor()
@@ -460,6 +539,10 @@ def fuel_quote_confirm():
                 db.commit()
 
                 out_msg = 'Order successfully submitted!'
+
+                # log_txt += '\n'
+                log(session['customer_id'], log_txt)
+
             except:
                 out_msg = 'Unexpected error!'
 
@@ -480,23 +563,36 @@ def fuel_quote_history():
         if request.form.get('home') == 'Home':
             return redirect(url_for("logged_in"))
 
-    # Get the history from the db
-    command = f"SELECT\
-                deliverydate, gallonsrequested, custlocation, price_p_gal, price\
-                FROM orders\
-                WHERE customerid = '{session['customer_id']}';"
+    # Get customer id to the cookie
+    command = f"SELECT customerid\
+                    FROM customer\
+                    WHERE username = '{session['username']}';"
+    temp = " ".join(command.split()) + '\n'
+    log_txt = temp
     
     db = get_db()
     cursor = db.cursor()
 
     cursor.execute(command)
-    data = cursor.fetchall()
-    # print(data)    
+    session['customer_id'] = cursor.fetchone()[0]
 
-    for stuff in data:
-        print(stuff)
+    # Get the history from the db
+    command = f"SELECT\
+                dateofrequest, deliverydate, gallonsrequested, custlocation, price_p_gal, price\
+                FROM orders\
+                WHERE customerid = '{session['customer_id']}';"
+    temp = " ".join(command.split()) + '\n'
+    log_txt += temp
+    
+    cursor.execute(command)
+    data = cursor.fetchall()
+    # print(datetime.date(data[0][0]))    
+
 
     cursor.close()
+
+    # log_txt += '\n'
+    log(session['customer_id'], log_txt)
     
 
     return render_template('fuel_quote_history.html', data=data)
