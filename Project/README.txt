@@ -5,9 +5,6 @@ More Info: https://packaging.python.org/en/latest/guides/installing-using-pip-an
 
 There is a file called 'script.sql' in this directory which can be used to recreate the database in postgresql.
 
-For Mac users, in order to setup the virtual environment install -r requirements.txt, but ignore any kivy related errors
-as it is based on windows and the virtual environment should work without Kivy.
-
 In order to set the Virtual environment up on mac follow these steps:
 
 1. Install the project from Github
